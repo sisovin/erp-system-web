@@ -1,0 +1,22 @@
+{
+  "name": "nexus-erp-system",
+  "version": "1.0.0",
+  "description": "Nexus ERP - Complete Enterprise Resource Planning System",
+  "scripts": {
+    "watch": "npx @tailwindcss/cli -i ./src/input.css -o ./public/css/tailwind.css --watch",
+    "build-css": "npx @tailwindcss/cli -i ./public/css/tailwind.css -o ./public/css/app.css --minify",
+    "dev": "npm run watch",
+    "build": "npm run build-css"
+  },
+  "keywords": [
+    "erp",
+    "tailwind",
+    "php"
+  ],
+  "author": "Nexus Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.18",
+    "tailwindcss": "^4.1.18"
+  }
+}

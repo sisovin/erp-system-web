@@ -1,0 +1,42 @@
+---
+- name: Deploy systemd unit and timer for Nexus ERP audit exports
+  hosts: all
+  become: yes
+  vars:
+    deploy_path: /var/www/erp-system
+    systemd_dir: /etc/systemd/system
+    unit_files:
+      - erp-audit-export.service
+      - erp-audit-export.timer
+  tasks:
+    - name: Copy systemd unit and timer files
+      copy:
+        src: "deploy/systemd/{{ item }}"
+        dest: "{{ systemd_dir }}/{{ item }}"
+        owner: root
+        group: root
+        mode: '0644'
+      loop: "{{ unit_files }}"
+
+    - name: Reload systemd
+      command: systemctl daemon-reload
+
+    - name: Enable timer
+      systemd:
+        name: erp-audit-export.timer
+        enabled: yes
+        state: started
+
+    - name: Ensure export directory exists
+      file:
+        path: "{{ deploy_path }}/storage/exports"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Verify timer is active
+      command: systemctl list-timers --all | grep erp-audit-export.timer
+      register: timer_status
+      failed_when: timer_status.rc != 0
+      changed_when: false

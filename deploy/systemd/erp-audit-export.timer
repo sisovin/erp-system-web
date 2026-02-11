@@ -1,0 +1,9 @@
+[Unit]
+Description=Run Nexus ERP Audit Export every 15 minutes
+
+[Timer]
+OnCalendar=*-*-* *:00/15
+Persistent=true
+
+[Install]
+WantedBy=timers.target

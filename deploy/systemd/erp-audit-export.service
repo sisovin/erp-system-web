@@ -1,0 +1,13 @@
+[Unit]
+Description=Nexus ERP - Daily Audit Export
+After=network.target
+
+[Service]
+Type=oneshot
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/erp-system
+ExecStart=/usr/bin/php /var/www/erp-system/cli/generate_scheduled_exports.php
+
+[Install]
+WantedBy=multi-user.target

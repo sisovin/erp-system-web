@@ -1,0 +1,35 @@
+/.env
+/.env.local
+/vendor/
+/node_modules/
+/public/assets/css/*.map
+/public/assets/css/.cache
+/storage/logs/
+/storage/cache/
+/storage/sessions/
+/.vscode/
+/.idea/
+/.DS_Store
+Thumbs.db
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.sass-cache
+/.cache
+/.phpunit.result.cache
+/.env.php
+/.history
+
+# Composer
+/composer.lock
+
+# Build outputs
+/public/build/
+/public/dist/
+
+# OS files
+ehthumbs.db
+Icon?
+
+# Secure keys and secrets
+/secrets/
