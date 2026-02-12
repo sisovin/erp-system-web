@@ -22,6 +22,41 @@ if ($uri === '/' || $uri === '/index.php') {
     exit;
 }
 
+// About page (public)
+if ($uri === '/about') {
+    $user = null; // Public page, no authentication required
+    include __DIR__ . '/../resources/views/home/about.php';
+    exit;
+}
+
+// Businesses page (public)
+if ($uri === '/businesses') {
+    $user = null; // Public page, no authentication required
+    include __DIR__ . '/../resources/views/home/businesses.php';
+    exit;
+}
+
+// Benefits page (public)
+if ($uri === '/benefits') {
+    $user = null; // Public page, no authentication required
+    include __DIR__ . '/../resources/views/home/benefits.php';
+    exit;
+}
+
+// Pricing page (public)
+if ($uri === '/pricing') {
+    $user = null; // Public page, no authentication required
+    include __DIR__ . '/../resources/views/home/pricing.php';
+    exit;
+}
+
+// Contact page (public)
+if ($uri === '/contact') {
+    $user = null; // Public page, no authentication required
+    include __DIR__ . '/../resources/views/home/contact.php';
+    exit;
+}
+
 if ($uri === '/login' && $method === 'GET') {
     $auth->showLogin();
     exit;
@@ -188,8 +223,27 @@ if ($uri === '/logout') {
     exit;
 }
 
+// Dashboard route
+if ($uri === '/dashboard') {
+    $user = require_login();
+    require_once __DIR__ . '/Controllers/DashboardController.php';
+    $controller = new DashboardController();
+    $controller->index($user);
+    exit;
+}
+
+// API: Dashboard metrics
+if ($uri === '/api/dashboard/metrics' && strtoupper($method) === 'GET') {
+    $user = require_login();
+    require_once __DIR__ . '/Controllers/DashboardController.php';
+    $controller = new DashboardController();
+    $controller->getMetricsJson();
+    exit;
+}
+
 if ($uri === '/admin') {
     $user = require_login();
+    require_admin(); // Require admin role
     $repo = new UserRepository();
     $users = $repo->listAll(50, 0);
     include __DIR__ . '/../resources/views/admin/dashboard.php';
@@ -199,6 +253,7 @@ if ($uri === '/admin') {
 // Admin: Audit logs viewer
 if ($uri === '/admin/audits') {
     $user = require_login();
+    require_permission('system.view_audit_logs');
     require_once __DIR__ . '/../app/Services/AuditService.php';
     $action = $_GET['action'] ?? null;
     $start = $_GET['start'] ?? null; // YYYY-MM-DD
@@ -292,6 +347,7 @@ if ($uri === '/admin/audits') {
 // Admin: Scheduled Exports CRUD
 if ($uri === '/admin/scheduled-exports') {
     $user = require_login();
+    require_permission('system.manage_exports');
     require_once __DIR__ . '/Controllers/Admin/ScheduledExportController.php';
     app\Controllers\Admin\ScheduledExportController::index();
     exit;
@@ -300,6 +356,7 @@ if ($uri === '/admin/scheduled-exports') {
 // Admin: Settings
 if ($uri === '/admin/settings') {
     $user = require_login();
+    require_permission('system.manage_settings');
     require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
     app\Controllers\Admin\SettingsController::edit();
     exit;
@@ -307,8 +364,17 @@ if ($uri === '/admin/settings') {
 
 if ($uri === '/admin/settings/update' && strtoupper($method) === 'POST') {
     $user = require_login();
+    require_permission('system.manage_settings');
     require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
     app\Controllers\Admin\SettingsController::update();
+    exit;
+}
+
+// Admin: Token Management
+if ($uri === '/admin/tokens') {
+    $user = require_login();
+    require_permission('system.manage_tokens');
+    include __DIR__ . '/../resources/views/admin/tokens.php';
     exit;
 }
 
@@ -569,6 +635,424 @@ if ($uri === '/admin/support') {
       </div>
     </body></html>
     <?php
+    exit;
+}
+
+// ============================================================================
+// HR MODULE ROUTES
+// ============================================================================
+
+// HR: List employees
+if ($uri === '/hr') {
+    $user = require_login();
+    require_permission('hr.view_employees');
+    require_once __DIR__ . '/Controllers/HRController.php';
+    $controller = new HRController();
+    $controller->index();
+    exit;
+}
+
+// HR: Create employee form
+if ($uri === '/hr/create') {
+    $user = require_login();
+    require_permission('hr.create_employee');
+    require_once __DIR__ . '/Controllers/HRController.php';
+    $controller = new HRController();
+    $controller->create();
+    exit;
+}
+
+// HR: Store employee
+if ($uri === '/hr/store' && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_permission('hr.create_employee');
+    require_once __DIR__ . '/Controllers/HRController.php';
+    $controller = new HRController();
+    $controller->store();
+    exit;
+}
+
+// HR: Show employee
+if (preg_match('#^/hr/([0-9]+)$#', $uri, $m) && strtoupper($method) === 'GET') {
+    $user = require_login();
+    require_permission('hr.view_employees');
+    require_once __DIR__ . '/Controllers/HRController.php';
+    $controller = new HRController();
+    $controller->show((int)$m[1]);
+    exit;
+}
+
+// HR: Edit employee form
+if (preg_match('#^/hr/([0-9]+)/edit$#', $uri, $m)) {
+    $user = require_login();
+    require_permission('hr.edit_employee');
+    require_once __DIR__ . '/Controllers/HRController.php';
+    $controller = new HRController();
+    $controller->edit((int)$m[1]);
+    exit;
+}
+
+// HR: Update employee
+if (preg_match('#^/hr/([0-9]+)/update$#', $uri, $m) && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_permission('hr.edit_employee');
+    require_once __DIR__ . '/Controllers/HRController.php';
+    $controller = new HRController();
+    $controller->update((int)$m[1]);
+    exit;
+}
+
+// HR: Delete employee
+if (preg_match('#^/hr/([0-9]+)$#', $uri, $m) && strtoupper($method) === 'DELETE') {
+    $user = require_login();
+    require_permission('hr.delete_employee');
+    require_once __DIR__ . '/Controllers/HRController.php';
+    $controller = new HRController();
+    $controller->destroy((int)$m[1]);
+    exit;
+}
+
+// HR: Attendance
+if ($uri === '/hr/attendance') {
+    $user = require_login();
+    require_permission('hr.view_attendance');
+    require_once __DIR__ . '/Controllers/HRController.php';
+    $controller = new HRController();
+    $controller->attendance();
+    exit;
+}
+
+// HR: Store attendance
+if ($uri === '/hr/attendance/store' && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_permission('hr.manage_attendance');
+    require_once __DIR__ . '/Controllers/HRController.php';
+    $controller = new HRController();
+    $controller->storeAttendance();
+    exit;
+}
+
+// HR: Payroll
+if ($uri === '/hr/payroll') {
+    $user = require_login();
+    require_permission('hr.view_payroll');
+    require_once __DIR__ . '/Controllers/HRController.php';
+    $controller = new HRController();
+    $controller->payroll();
+    exit;
+}
+
+// HR: Store payroll
+if ($uri === '/hr/payroll/store' && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_permission('hr.manage_payroll');
+    require_once __DIR__ . '/Controllers/HRController.php';
+    $controller = new HRController();
+    $controller->storePayroll();
+    exit;
+}
+
+// ============================================================================
+// INVENTORY MODULE ROUTES
+// ============================================================================
+
+// Inventory: List products
+if ($uri === '/inventory') {
+    $user = require_login();
+    require_permission('inventory.view_products');
+    require_once __DIR__ . '/Controllers/InventoryController.php';
+    $controller = new InventoryController();
+    $controller->index();
+    exit;
+}
+
+// Inventory: Create product form
+if ($uri === '/inventory/create') {
+    $user = require_login();
+    require_permission('inventory.create_product');
+    require_once __DIR__ . '/Controllers/InventoryController.php';
+    $controller = new InventoryController();
+    $controller->create();
+    exit;
+}
+
+// Inventory: Store product
+if ($uri === '/inventory/store' && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_permission('inventory.create_product');
+    require_once __DIR__ . '/Controllers/InventoryController.php';
+    $controller = new InventoryController();
+    $controller->store();
+    exit;
+}
+
+// Inventory: Show product
+if (preg_match('#^/inventory/([0-9]+)$#', $uri, $m) && strtoupper($method) === 'GET') {
+    $user = require_login();
+    require_once __DIR__ . '/Controllers/InventoryController.php';
+    $controller = new InventoryController();
+    $controller->show((int)$m[1]);
+    exit;
+}
+
+// Inventory: Edit product form
+if (preg_match('#^/inventory/([0-9]+)/edit$#', $uri, $m)) {
+    $user = require_login();
+    require_permission('inventory.edit_product');
+    require_once __DIR__ . '/Controllers/InventoryController.php';
+    $controller = new InventoryController();
+    $controller->edit((int)$m[1]);
+    exit;
+}
+
+// Inventory: Update product
+if (preg_match('#^/inventory/([0-9]+)/update$#', $uri, $m) && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_permission('inventory.edit_product');
+    require_once __DIR__ . '/Controllers/InventoryController.php';
+    $controller = new InventoryController();
+    $controller->update((int)$m[1]);
+    exit;
+}
+
+// Inventory: Delete product
+if (preg_match('#^/inventory/([0-9]+)$#', $uri, $m) && strtoupper($method) === 'DELETE') {
+    $user = require_login();
+    require_permission('inventory.delete_product');
+    require_once __DIR__ . '/Controllers/InventoryController.php';
+    $controller = new InventoryController();
+    $controller->destroy((int)$m[1]);
+    exit;
+}
+
+// Inventory: Stock movements
+if ($uri === '/inventory/movements') {
+    $user = require_login();
+    require_permission('inventory.manage_stock');
+    require_once __DIR__ . '/Controllers/InventoryController.php';
+    $controller = new InventoryController();
+    $controller->movements();
+    exit;
+}
+
+// Inventory: Store movement
+if ($uri === '/inventory/movements/store' && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_permission('inventory.manage_stock');
+    require_once __DIR__ . '/Controllers/InventoryController.php';
+    $controller = new InventoryController();
+    $controller->storeMovement();
+    exit;
+}
+
+// Inventory: Suppliers
+if ($uri === '/inventory/suppliers') {
+    $user = require_login();
+    require_permission('inventory.view_suppliers');
+    require_once __DIR__ . '/Controllers/InventoryController.php';
+    $controller = new InventoryController();
+    $controller->suppliers();
+    exit;
+}
+
+// ============================================================================
+// SALES MODULE ROUTES
+// ============================================================================
+
+// Sales: List orders
+if ($uri === '/sales') {
+    $user = require_login();
+    require_permission('sales.view_orders');
+    require_once __DIR__ . '/Controllers/SalesController.php';
+    $controller = new SalesController();
+    $controller->index();
+    exit;
+}
+
+// Sales: Create order form
+if ($uri === '/sales/create') {
+    $user = require_login();
+    require_permission('sales.create_order');
+    require_once __DIR__ . '/Controllers/SalesController.php';
+    $controller = new SalesController();
+    $controller->create();
+    exit;
+}
+
+// Sales: Store order
+if ($uri === '/sales/store' && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_permission('sales.create_order');
+    require_once __DIR__ . '/Controllers/SalesController.php';
+    $controller = new SalesController();
+    $controller->store();
+    exit;
+}
+
+// Sales: Show order
+if (preg_match('#^/sales/([0-9]+)$#', $uri, $m) && strtoupper($method) === 'GET') {
+    $user = require_login();
+    require_once __DIR__ . '/Controllers/SalesController.php';
+    $controller = new SalesController();
+    $controller->show((int)$m[1]);
+    exit;
+}
+
+// Sales: Update order status
+if (preg_match('#^/sales/([0-9]+)/status$#', $uri, $m) && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_once __DIR__ . '/Controllers/SalesController.php';
+    $controller = new SalesController();
+    $controller->updateStatus((int)$m[1]);
+    exit;
+}
+
+// Sales: Delete order
+if (preg_match('#^/sales/([0-9]+)$#', $uri, $m) && strtoupper($method) === 'DELETE') {
+    $user = require_login();
+    require_permission('sales.delete_order');
+    require_once __DIR__ . '/Controllers/SalesController.php';
+    $controller = new SalesController();
+    $controller->destroy((int)$m[1]);
+    exit;
+}
+
+// Sales: Customers
+if ($uri === '/sales/customers') {
+    $user = require_login();
+    require_permission('sales.view_customers');
+    require_once __DIR__ . '/Controllers/SalesController.php';
+    $controller = new SalesController();
+    $controller->customers();
+    exit;
+}
+
+// Sales: Store customer
+if ($uri === '/sales/customers/store' && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_once __DIR__ . '/Controllers/SalesController.php';
+    $controller = new SalesController();
+    $controller->storeCustomer();
+    exit;
+}
+
+// Sales: Invoices
+if ($uri === '/sales/invoices') {
+    $user = require_login();
+    require_permission('sales.view_invoices');
+    require_once __DIR__ . '/Controllers/SalesController.php';
+    $controller = new SalesController();
+    $controller->invoices();
+    exit;
+}
+
+// Sales: Generate invoice
+if (preg_match('#^/sales/([0-9]+)/invoice$#', $uri, $m) && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_once __DIR__ . '/Controllers/SalesController.php';
+    $controller = new SalesController();
+    $controller->generateInvoice((int)$m[1]);
+    exit;
+}
+
+// ============================================================================
+// ACCOUNTS MODULE ROUTES
+// ============================================================================
+
+// Accounts: List accounts (chart of accounts)
+if ($uri === '/accounts') {
+    $user = require_login();
+    require_permission('accounts.view_chart');
+    require_once __DIR__ . '/Controllers/AccountsController.php';
+    $controller = new AccountsController();
+    $controller->index();
+    exit;
+}
+
+// Accounts: Create account form
+if ($uri === '/accounts/create') {
+    $user = require_login();
+    require_permission('accounts.create_account');
+    require_once __DIR__ . '/Controllers/AccountsController.php';
+    $controller = new AccountsController();
+    $controller->create();
+    exit;
+}
+
+// Accounts: Store account
+if ($uri === '/accounts/store' && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_permission('accounts.create_account');
+    require_once __DIR__ . '/Controllers/AccountsController.php';
+    $controller = new AccountsController();
+    $controller->store();
+    exit;
+}
+
+// Accounts: Show account
+if (preg_match('#^/accounts/([0-9]+)$#', $uri, $m) && strtoupper($method) === 'GET') {
+    $user = require_login();
+    require_once __DIR__ . '/Controllers/AccountsController.php';
+    $controller = new AccountsController();
+    $controller->show((int)$m[1]);
+    exit;
+}
+
+// Accounts: Delete account
+if (preg_match('#^/accounts/([0-9]+)$#', $uri, $m) && strtoupper($method) === 'DELETE') {
+    $user = require_login();
+    require_permission('accounts.delete_account');
+    require_once __DIR__ . '/Controllers/AccountsController.php';
+    $controller = new AccountsController();
+    $controller->destroy((int)$m[1]);
+    exit;
+}
+
+// Accounts: General ledger
+if ($uri === '/accounts/ledger') {
+    $user = require_login();
+    require_permission('accounts.view_ledger');
+    require_once __DIR__ . '/Controllers/AccountsController.php';
+    $controller = new AccountsController();
+    $controller->ledger();
+    exit;
+}
+
+// Accounts: Post ledger entry
+if ($uri === '/accounts/ledger/store' && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_permission('accounts.post_entry');
+    require_once __DIR__ . '/Controllers/AccountsController.php';
+    $controller = new AccountsController();
+    $controller->storeEntry();
+    exit;
+}
+
+// Accounts: Expenses
+if ($uri === '/accounts/expenses') {
+    $user = require_login();
+    require_permission('accounts.view_expenses');
+    require_once __DIR__ . '/Controllers/AccountsController.php';
+    $controller = new AccountsController();
+    $controller->expenses();
+    exit;
+}
+
+// Accounts: Store expense
+if ($uri === '/accounts/expenses/store' && strtoupper($method) === 'POST') {
+    $user = require_login();
+    require_once __DIR__ . '/Controllers/AccountsController.php';
+    $controller = new AccountsController();
+    $controller->storeExpense();
+    exit;
+}
+
+// Accounts: Financial reports
+if ($uri === '/accounts/reports') {
+    $user = require_login();
+    require_once __DIR__ . '/Controllers/AccountsController.php';
+    $controller = new AccountsController();
+    $controller->reports();
     exit;
 }
 

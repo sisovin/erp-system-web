@@ -1,4 +1,4 @@
-# 🚀 START HERE - Nexus ERP Quick Navigation
+# 🚀 START HERE - Peanech ERP Quick Navigation
 
 Welcome! This guide will help you navigate all the materials and get your ERP system running.
 

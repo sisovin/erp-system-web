@@ -1,6 +1,6 @@
 # Project Structure (quick reference)
 
-This file summarizes the key folders and files in the Nexus ERP package you received.
+This file summarizes the key folders and files in the Peanech ERP package you received.
 
 Root
 - .env                   ← local environment (not committed)

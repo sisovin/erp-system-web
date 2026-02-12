@@ -1,6 +1,6 @@
 # Data Layer Overview
 
-This document explains the data layer conventions for the Nexus ERP project and how to connect/use the database safely.
+This document explains the data layer conventions for the Peanech ERP project and how to connect/use the database safely.
 
 1) PDO (MySQL) - recommended
 - Use PHP PDO for all database interactions (prepared statements by default).

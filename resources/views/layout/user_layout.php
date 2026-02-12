@@ -101,6 +101,15 @@ function isUserMenuActive($menu, $activeMenu) {
             <a href="/about" class="text-sm font-medium text-gray-700 hover:text-primary-600 transition">
               About
             </a>
+            <a href="/businesses" class="text-sm font-medium text-gray-700 hover:text-primary-600 transition">
+              Businesses
+            </a>
+            <a href="/benefits" class="text-sm font-medium text-gray-700 hover:text-primary-600 transition">
+              Benefits
+            </a>
+            <a href="/pricing" class="text-sm font-medium text-gray-700 hover:text-primary-600 transition">
+              Pricing
+            </a>
             <a href="/contact" class="text-sm font-medium text-gray-700 hover:text-primary-600 transition">
               Contact
             </a>
@@ -135,6 +144,15 @@ function isUserMenuActive($menu, $activeMenu) {
           </a>
           <a href="/about" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition">
             About
+          </a>
+          <a href="/businesses" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition">
+            Businesses
+          </a>
+          <a href="/benefits" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition">
+            Benefits
+          </a>
+          <a href="/pricing" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition">
+            Pricing
           </a>
           <a href="/contact" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition">
             Contact
@@ -499,5 +517,8 @@ function isUserMenuActive($menu, $activeMenu) {
       });
     }
   </script>
+
+  <!-- App.js - Client-side utilities -->
+  <script src="/js/app.js"></script>
 </body>
 </html>

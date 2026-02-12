@@ -1,4 +1,4 @@
-# Nexus ERP - Complete Full-Stack ERP System
+# Peanech ERP - Complete Full-Stack ERP System
 ## Project Summary & Quick Start Guide
 
 ---

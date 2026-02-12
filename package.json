@@ -1,22 +1,31 @@
 {
-  "name": "nexus-erp-system",
+  "name": "peanech-erp-system",
   "version": "1.0.0",
-  "description": "Nexus ERP - Complete Enterprise Resource Planning System",
+  "description": "Peanech ERP - Complete Enterprise Resource Planning System",
   "scripts": {
-    "watch": "npx @tailwindcss/cli -i ./src/input.css -o ./public/css/tailwind.css --watch",
-    "build-css": "npx @tailwindcss/cli -i ./public/css/tailwind.css -o ./public/css/app.css --minify",
-    "dev": "npm run watch",
-    "build": "npm run build-css"
+    "prestart": "where php >nul 2>&1 || echo Warning: PHP not in PATH. Use 'npm run laragon:start' on Windows with Laragon.",
+    "start": "php -S localhost:8000 -t public",
+    "laragon:start": "D:\\laragon\\bin\\php\\php-8.5.0-Win32-vs16-x64\\php.exe -S localhost:8000 -t public",
+    "build": "echo Run: .\\build-css.ps1",
+    "watch": "echo Run: .\\watch-css.ps1",
+    "dev": "echo 'Starting development server...' && concurrently \"npm run start\" \"echo Run watch-css.ps1 in another terminal\" --names \"SERVER,CSS\" --prefix-colors \"blue,green\"",
+    "dev:laragon": "echo 'Starting Laragon development server...' && concurrently \"npm run laragon:start\" \"echo Run watch-css.ps1 in another terminal\" --names \"SERVER,CSS\" --prefix-colors \"blue,green\"",
+    "dev:simple": "echo Run: .\\watch-css.ps1",
+    "cache:warmup": "php cli/sync_redis.php warmup",
+    "cache:info": "php cli/sync_redis.php info",
+    "cache:flush": "php cli/sync_redis.php flush"
   },
   "keywords": [
     "erp",
     "tailwind",
-    "php"
+    "php",
+    "peanech"
   ],
-  "author": "Nexus Team",
+  "author": "Peanech Team",
   "license": "MIT",
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.18",
+    "concurrently": "^8.2.2",
     "tailwindcss": "^4.1.18"
   }
 }

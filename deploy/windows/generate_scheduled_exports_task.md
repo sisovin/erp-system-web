@@ -3,7 +3,7 @@
 This is a simple guide to create a scheduled task to run `generate_scheduled_exports.php` using Laragon's PHP on Windows.
 
 1. Open Task Scheduler -> Create Task...
-2. Name: `NexusERP - Audit Export`
+2. Name: `PeanechERP - Audit Export`
 3. Security options: Run whether user is logged on or not, and run with highest privileges.
 4. Trigger: Daily at desired time (e.g., 04:00)
 5. Action: Start a program
@@ -16,7 +16,7 @@ This is a simple guide to create a scheduled task to run `generate_scheduled_exp
 Alternatively, create via `schtasks` CLI:
 
 ```powershell
-schtasks /Create /SC DAILY /TN "NexusERP - Audit Export" /TR "D:\\laragon\\bin\\php\\php-8.5.0-Win32-vs17-x64\\php.exe D:\\laragon\\www\\erp-system-web\\cli\\generate_scheduled_exports.php" /ST 04:00 /RU "SYSTEM"
+schtasks /Create /SC DAILY /TN "PeanechERP - Audit Export" /TR "D:\\laragon\\bin\\php\\php-8.5.0-Win32-vs17-x64\\php.exe D:\\laragon\\www\\erp-system-web\\cli\\generate_scheduled_exports.php" /ST 04:00 /RU "SYSTEM"
 ```
 
 Notes:

@@ -349,5 +349,8 @@ function isActive($menu, $activeMenu) {
       });
     }
   </script>
+
+  <!-- App.js - Client-side utilities -->
+  <script src="/js/app.js"></script>
 </body>
 </html>
