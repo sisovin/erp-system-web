@@ -19,7 +19,7 @@ class SettingsController
             'smtp_from' => SettingsRepository::get('smtp_from', ''),
             'smtp_secure' => SettingsRepository::get('smtp_secure', 'tls'),
         ];
-        require __DIR__ . '/../../../../resources/views/admin/settings.php';
+        require __DIR__ . '/../../../resources/views/admin/settings.php';
     }
 
     public static function update()

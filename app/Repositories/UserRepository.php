@@ -74,6 +74,14 @@ class UserRepository
         CacheManager::invalidateLists(CacheManager::PREFIX_USER);
         CacheManager::invalidateRelated([CacheManager::PREFIX_COUNT]);
         
+        return $this->findById($id);
+    }
+
+    /**
+     * List all users with pagination
+     */
+    public function listAll(int $limit = 50, int $offset = 0): array
+    {
         // Cache list with params for uniqueness
         $params = ['limit' => $limit, 'offset' => $offset];
         $cached = CacheManager::getList(CacheManager::PREFIX_USER, $params);
@@ -96,11 +104,6 @@ class UserRepository
         // Cache the result
         CacheManager::cacheList(CacheManager::PREFIX_USER, $params, $rows, CacheManager::TTL_SHORT);
         
-        $stmt = $this->pdo->prepare('SELECT * FROM users ORDER BY id ASC LIMIT ? OFFSET ?');
-        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
-        $stmt->bindValue(2, $offset, PDO::PARAM_INT);
-        $stmt->execute();
-        $rows = $stmt->fetchAll();
         $ret = [];
         foreach ($rows as $row) {
             $ret[] = User::fromArray($row);

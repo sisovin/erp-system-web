@@ -1,14 +1,15 @@
 <?php
 namespace app\Repositories;
 
+require_once __DIR__ . '/../Services/Database.php';
+
 use app\Models\ScheduledExport;
-use app\Services\Database;
 
 class ScheduledExportRepository
 {
     public static function allEnabled(): array
     {
-        $pdo = Database::getPdo();
+        $pdo = \Database::getPdo();
         $stmt = $pdo->prepare("SELECT * FROM scheduled_exports WHERE enabled = 1");
         $stmt->execute();
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -21,7 +22,7 @@ class ScheduledExportRepository
 
     public static function findById($id): ?ScheduledExport
     {
-        $pdo = Database::getPdo();
+        $pdo = \Database::getPdo();
         $stmt = $pdo->prepare("SELECT * FROM scheduled_exports WHERE id = :id");
         $stmt->execute(['id' => $id]);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -30,7 +31,7 @@ class ScheduledExportRepository
 
     public static function save(ScheduledExport $s): ScheduledExport
     {
-        $pdo = Database::getPdo();
+        $pdo = \Database::getPdo();
         if (!empty($s->id)) {
             $stmt = $pdo->prepare("UPDATE scheduled_exports SET name = :name, description = :description, `columns` = :columns, `format` = :format, schedule_type = :schedule_type, schedule_time = :schedule_time, schedule_cron = :schedule_cron, retention_days = :retention_days, upload_to_s3 = :upload_to_s3, enabled = :enabled, updated_at = NOW() WHERE id = :id");
             $stmt->execute([
@@ -68,7 +69,7 @@ class ScheduledExportRepository
 
     public static function delete($id): bool
     {
-        $pdo = Database::getPdo();
+        $pdo = \Database::getPdo();
         $stmt = $pdo->prepare("DELETE FROM scheduled_exports WHERE id = :id");
         return $stmt->execute(['id' => $id]);
     }

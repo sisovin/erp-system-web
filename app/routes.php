@@ -253,7 +253,7 @@ if ($uri === '/admin') {
 // Admin: Audit logs viewer
 if ($uri === '/admin/audits') {
     $user = require_login();
-    require_permission('system.view_audit_logs');
+    require_admin(); // Require admin role
     require_once __DIR__ . '/../app/Services/AuditService.php';
     $action = $_GET['action'] ?? null;
     $start = $_GET['start'] ?? null; // YYYY-MM-DD
@@ -347,7 +347,7 @@ if ($uri === '/admin/audits') {
 // Admin: Scheduled Exports CRUD
 if ($uri === '/admin/scheduled-exports') {
     $user = require_login();
-    require_permission('system.manage_exports');
+    require_admin(); // Require admin role
     require_once __DIR__ . '/Controllers/Admin/ScheduledExportController.php';
     app\Controllers\Admin\ScheduledExportController::index();
     exit;
@@ -356,7 +356,7 @@ if ($uri === '/admin/scheduled-exports') {
 // Admin: Settings
 if ($uri === '/admin/settings') {
     $user = require_login();
-    require_permission('system.manage_settings');
+    require_admin(); // Require admin role
     require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
     app\Controllers\Admin\SettingsController::edit();
     exit;
@@ -364,7 +364,7 @@ if ($uri === '/admin/settings') {
 
 if ($uri === '/admin/settings/update' && strtoupper($method) === 'POST') {
     $user = require_login();
-    require_permission('system.manage_settings');
+    require_admin(); // Require admin role
     require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
     app\Controllers\Admin\SettingsController::update();
     exit;
@@ -373,7 +373,7 @@ if ($uri === '/admin/settings/update' && strtoupper($method) === 'POST') {
 // Admin: Token Management
 if ($uri === '/admin/tokens') {
     $user = require_login();
-    require_permission('system.manage_tokens');
+    require_admin(); // Require admin role
     include __DIR__ . '/../resources/views/admin/tokens.php';
     exit;
 }
@@ -432,210 +432,88 @@ if ($uri === '/admin/users') {
 // Admin: Roles & Permissions
 if ($uri === '/admin/roles') {
     $user = require_login();
-    ?>
-    <!doctype html>
-    <html><head><title>Roles & Permissions - Nexus ERP</title><link href="/css/tailwind.css" rel="stylesheet"></head>
-    <body class="bg-gray-50 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8"><a href="/admin" class="text-primary-600 hover:text-primary-800">&larr; Back to Dashboard</a></div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Roles & Permissions</h1>
-        <div class="bg-white shadow rounded-lg p-6">
-          <p class="text-gray-600">Role-based access control management coming soon.</p>
-        </div>
-      </div>
-    </body></html>
-    <?php
+    require_admin(); // Require admin role
+    include __DIR__ . '/../resources/views/admin/roles.php';
     exit;
 }
 
 // Admin: Departments
 if ($uri === '/admin/departments') {
     $user = require_login();
-    ?>
-    <!doctype html>
-    <html><head><title>Departments - Nexus ERP</title><link href="/css/tailwind.css" rel="stylesheet"></head>
-    <body class="bg-gray-50 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8"><a href="/admin" class="text-primary-600 hover:text-primary-800">&larr; Back to Dashboard</a></div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Departments</h1>
-        <div class="bg-white shadow rounded-lg p-6">
-          <p class="text-gray-600">Department management coming soon.</p>
-        </div>
-      </div>
-    </body></html>
-    <?php
+    require_admin(); // Require admin role
+    include __DIR__ . '/../resources/views/admin/departments.php';
     exit;
 }
 
 // Admin: Activity Monitor
 if ($uri === '/admin/activity') {
     $user = require_login();
-    ?>
-    <!doctype html>
-    <html><head><title>Activity Monitor - Nexus ERP</title><link href="/css/tailwind.css" rel="stylesheet"></head>
-    <body class="bg-gray-50 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8"><a href="/admin" class="text-primary-600 hover:text-primary-800">&larr; Back to Dashboard</a></div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Activity Monitor</h1>
-        <div class="bg-white shadow rounded-lg p-6">
-          <p class="text-gray-600">Real-time activity monitoring coming soon.</p>
-        </div>
-      </div>
-    </body></html>
-    <?php
+    require_admin(); // Require admin role
+    include __DIR__ . '/../resources/views/admin/activity.php';
     exit;
 }
 
 // Admin: Reports
 if ($uri === '/admin/reports') {
     $user = require_login();
-    ?>
-    <!doctype html>
-    <html><head><title>Reports - Nexus ERP</title><link href="/css/tailwind.css" rel="stylesheet"></head>
-    <body class="bg-gray-50 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8"><a href="/admin" class="text-primary-600 hover:text-primary-800">&larr; Back to Dashboard</a></div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Reports</h1>
-        <div class="bg-white shadow rounded-lg p-6">
-          <p class="text-gray-600">Report generation and analytics coming soon.</p>
-        </div>
-      </div>
-    </body></html>
-    <?php
+    require_admin(); // Require admin role
+    include __DIR__ . '/../resources/views/admin/reports.php';
     exit;
 }
 
-// Admin: Background Jobs
+// Admin: Jobs & Careers Management
 if ($uri === '/admin/jobs') {
     $user = require_login();
-    ?>
-    <!doctype html>
-    <html><head><title>Background Jobs - Nexus ERP</title><link href="/css/tailwind.css" rel="stylesheet"></head>
-    <body class="bg-gray-50 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8"><a href="/admin" class="text-primary-600 hover:text-primary-800">&larr; Back to Dashboard</a></div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Background Jobs</h1>
-        <div class="bg-white shadow rounded-lg p-6">
-          <p class="text-gray-600">Job queue management coming soon.</p>
-        </div>
-      </div>
-    </body></html>
-    <?php
+    require_admin(); // Require admin role
+    require_once __DIR__ . '/Controllers/Admin/JobsController.php';
+    app\Controllers\Admin\JobsController::index();
     exit;
 }
 
 // Admin: Workflows
+// Admin: Workflows
 if ($uri === '/admin/workflows') {
     $user = require_login();
-    ?>
-    <!doctype html>
-    <html><head><title>Workflows - Nexus ERP</title><link href="/css/tailwind.css" rel="stylesheet"></head>
-    <body class="bg-gray-50 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8"><a href="/admin" class="text-primary-600 hover:text-primary-800">&larr; Back to Dashboard</a></div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Workflows</h1>
-        <div class="bg-white shadow rounded-lg p-6">
-          <p class="text-gray-600">Workflow automation coming soon.</p>
-        </div>
-      </div>
-    </body></html>
-    <?php
+    require_admin(); // Require admin role
+    include __DIR__ . '/../resources/views/admin/workflows.php';
     exit;
 }
 
 // Admin: Notifications
+// Admin: Notifications
 if ($uri === '/admin/notifications') {
     $user = require_login();
-    ?>
-    <!doctype html>
-    <html><head><title>Notifications - Nexus ERP</title><link href="/css/tailwind.css" rel="stylesheet"></head>
-    <body class="bg-gray-50 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8"><a href="/admin" class="text-primary-600 hover:text-primary-800">&larr; Back to Dashboard</a></div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Notifications</h1>
-        <div class="bg-white shadow rounded-lg p-6">
-          <p class="text-gray-600">Notification center coming soon.</p>
-        </div>
-      </div>
-    </body></html>
-    <?php
+    require_admin(); // Require admin role
+    include __DIR__ . '/../resources/views/admin/notifications.php';
     exit;
 }
 
 // Admin: Integrations
 if ($uri === '/admin/integrations') {
-    $user = require_login();
-    ?>
-    <!doctype html>
-    <html><head><title>Integrations - Nexus ERP</title><link href="/css/tailwind.css" rel="stylesheet"></head>
-    <body class="bg-gray-50 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8"><a href="/admin" class="text-primary-600 hover:text-primary-800">&larr; Back to Dashboard</a></div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Integrations</h1>
-        <div class="bg-white shadow rounded-lg p-6">
-          <p class="text-gray-600">Third-party integrations management coming soon.</p>
-        </div>
-      </div>
-    </body></html>
-    <?php
+    $user = require_admin();
+    include __DIR__ . '/../resources/views/admin/integrations.php';
     exit;
 }
 
 // Admin: Database
 if ($uri === '/admin/database') {
-    $user = require_login();
-    ?>
-    <!doctype html>
-    <html><head><title>Database - Nexus ERP</title><link href="/css/tailwind.css" rel="stylesheet"></head>
-    <body class="bg-gray-50 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8"><a href="/admin" class="text-primary-600 hover:text-primary-800">&larr; Back to Dashboard</a></div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Database Management</h1>
-        <div class="bg-white shadow rounded-lg p-6">
-          <p class="text-gray-600">Database tools and migration management coming soon.</p>
-        </div>
-      </div>
-    </body></html>
-    <?php
+    $user = require_admin();
+    include __DIR__ . '/../resources/views/admin/database.php';
     exit;
 }
 
 // Admin: Documentation
 if ($uri === '/admin/documentation') {
-    $user = require_login();
-    ?>
-    <!doctype html>
-    <html><head><title>Documentation - Nexus ERP</title><link href="/css/tailwind.css" rel="stylesheet"></head>
-    <body class="bg-gray-50 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8"><a href="/admin" class="text-primary-600 hover:text-primary-800">&larr; Back to Dashboard</a></div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Documentation</h1>
-        <div class="bg-white shadow rounded-lg p-6">
-          <p class="text-gray-600">System documentation coming soon.</p>
-        </div>
-      </div>
-    </body></html>
-    <?php
-    exit;
+    require_admin();
+    include __DIR__ . '/../resources/views/admin/documentation.php';
+    return;
 }
 
 // Admin: Support
 if ($uri === '/admin/support') {
-    $user = require_login();
-    ?>
-    <!doctype html>
-    <html><head><title>Support - Nexus ERP</title><link href="/css/tailwind.css" rel="stylesheet"></head>
-    <body class="bg-gray-50 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8"><a href="/admin" class="text-primary-600 hover:text-primary-800">&larr; Back to Dashboard</a></div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Support</h1>
-        <div class="bg-white shadow rounded-lg p-6">
-          <p class="text-gray-600">Support and help desk coming soon.</p>
-        </div>
-      </div>
-    </body></html>
-    <?php
-    exit;
+    require_admin();
+    include __DIR__ . '/../resources/views/admin/support.php';
+    return;
 }
 
 // ============================================================================

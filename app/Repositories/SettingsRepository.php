@@ -1,14 +1,14 @@
 <?php
 namespace app\Repositories;
 
-use app\Services\Database;
+require_once __DIR__ . '/../Services/Database.php';
 use app\Services\Secrets;
 
 class SettingsRepository
 {
     public static function get(string $key, $default = null)
     {
-        $pdo = Database::getPdo();
+        $pdo = \Database::getPdo();
         $stmt = $pdo->prepare('SELECT v, is_secret FROM settings WHERE `k` = :k');
         $stmt->execute(['k' => $key]);
         $r = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -25,7 +25,7 @@ class SettingsRepository
 
     public static function set(string $key, $value, bool $isSecret = false): bool
     {
-        $pdo = Database::getPdo();
+        $pdo = \Database::getPdo();
         $v = $value;
         if ($isSecret && $value !== null) $v = Secrets::encrypt($value);
         $stmt = $pdo->prepare('INSERT INTO settings (`k`, `v`, `is_secret`) VALUES (:k, :v, :is_secret) ON DUPLICATE KEY UPDATE `v` = VALUES(`v`), is_secret = VALUES(is_secret), updated_at = NOW()');

@@ -12,13 +12,13 @@ class ScheduledExportController
     public static function index()
     {
         $items = ScheduledExportRepository::allEnabled();
-        require __DIR__ . '/../../../../resources/views/admin/scheduled_exports/index.php';
+        require __DIR__ . '/../../../resources/views/admin/scheduled_exports/index.php';
     }
 
     public static function createForm()
     {
         $item = new ScheduledExport();
-        require __DIR__ . '/../../../../resources/views/admin/scheduled_exports/form.php';
+        require __DIR__ . '/../../../resources/views/admin/scheduled_exports/form.php';
     }
 
     public static function editForm($id)
@@ -28,7 +28,7 @@ class ScheduledExportController
             header('Location: /admin/scheduled-exports');
             exit;
         }
-        require __DIR__ . '/../../../../resources/views/admin/scheduled_exports/form.php';
+        require __DIR__ . '/../../../resources/views/admin/scheduled_exports/form.php';
     }
 
     public static function store()
